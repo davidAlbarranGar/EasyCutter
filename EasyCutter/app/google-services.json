@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "701123024276",
+    "project_id": "easycutter",
+    "storage_bucket": "easycutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701123024276:android:aa3f2ca982d5b621bfeb81",
+        "android_client_info": {
+          "package_name": "com.david.easycutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABVB0r0WAsk4xdk9q1JqkeigijBct5fbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
