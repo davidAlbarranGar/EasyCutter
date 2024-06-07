@@ -92,6 +92,7 @@ class BarberShopViewModel {
 
         try {
             fireStoreRef.delete().addOnSuccessListener {
+                DateViewModel().deleteAllDatesByPeluqueria(barberShop.idPeluqueria.toString(),context)
                 Toast.makeText(context, "Barbería borrada correctamente", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {

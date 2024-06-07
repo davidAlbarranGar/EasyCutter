@@ -280,6 +280,15 @@ fun ContenidoItemPeticion(
                     Button(
                         onClick = {
                             RequestViewModel().deleteRequest("request", peticion, context)
+                            ImageViewModel().deleteLogoImage(
+                                peticion.peluqueria.idPeluqueria.toString(),
+                                onSuccess = {
+                                    Log.d("Borrado", "Imagen logo borrada correctamente")
+                                },
+                                onFailure = {
+                                    Log.d("Borrado", "Error al borrar imagen logo")
+                                }
+                            )
                             navController.navigate(Screens.PantallaPeticiones.name)
                         },
                         colors = ButtonDefaults.buttonColors(Color.Red)

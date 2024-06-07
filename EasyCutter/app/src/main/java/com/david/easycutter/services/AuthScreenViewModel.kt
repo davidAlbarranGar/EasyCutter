@@ -232,8 +232,7 @@ class AuthScreenViewModel: ViewModel() {
         val authStateListener = FirebaseAuth.AuthStateListener{
             // Verificamos si no hay ningún usuario autenticado
             if (it.currentUser == null){
-                // Navegamos a la pantalla de inicio de sesión usando el NavController
-                Toast.makeText(context, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show()
+                Log.d("Logout", "Sesión cerrada correctamente")
                 FileLogger.logToFile(context,"Auth","Logout correcto")
                 navController.navigate(Screens.PantallaInicioSesion.name)
             }

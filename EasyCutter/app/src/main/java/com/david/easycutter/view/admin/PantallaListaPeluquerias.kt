@@ -244,7 +244,31 @@ fun contenidoItemPeluqueria(peluqueria: Peluqueria, contexto: Context, modeloVis
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
-                    onClick = { modeloVistaPeluqueria.deleteBarberShop("barbershop", peluqueria, contexto) },
+                    onClick = {
+                        modeloVistaPeluqueria.deleteBarberShop("barbershop", peluqueria, contexto)
+                        ImageViewModel().deleteLogoImage(
+                            peluqueria.idPeluqueria.toString(),
+                            onSuccess = {
+                                Log.d("Borrado", "Imagen logo borrada correctamente")
+                            },
+                            onFailure = {
+                                Log.d("Borrado", "Error al borrar imagen logo")
+                            }
+                        )
+                        BarberShopViewModel().getBarberShopsByBarber(
+                            "barbershop",
+                            peluqueria.peluquero,
+                            contexto
+                        ) { barberShops ->
+                            if (barberShops.isEmpty()) {
+                                UserViewModel().editRoleUser(
+                                    peluqueria.peluquero,
+                                    Role.User,
+                                    contexto
+                                )
+                            }
+                        }
+                              },
                     colors = ButtonDefaults.buttonColors(Color.Red),
                     modifier = Modifier.weight(1f)
                 ) {

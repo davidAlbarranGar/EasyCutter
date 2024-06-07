@@ -13,6 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * ViewModel que gestiona las operaciones relacionadas con las citas y reservas.
@@ -167,7 +170,7 @@ class DateViewModel: ViewModel() {
         val db = FirebaseFirestore.getInstance()
         val dateRef = db.collection("dates").document(dateId)
         dateRef
-            .update("state", "Cancelada")
+            .update("estado", "Cancelada")
             .addOnSuccessListener {
                 Toast.makeText(context, "Cita cancelada exitosamente.", Toast.LENGTH_SHORT).show()
             }
@@ -192,6 +195,69 @@ class DateViewModel: ViewModel() {
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Error al cancelar cita", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    /**
+     * Elimina todas las citas asociadas a una peluquería específica de Firestore.
+     *
+     * @param idPeluqueria Email de la peluquería cuyas citas serán eliminadas.
+     * @param context Contexto de la aplicación.
+     */
+    fun deleteAllDatesByPeluqueria(idPeluqueria: String, context: Context) {
+        val db = FirebaseFirestore.getInstance()
+        val datesRef = db.collection("dates")
+        val query = datesRef.whereEqualTo("idPeluqueria", idPeluqueria)
+
+        query.get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    document.reference.delete()
+                        .addOnSuccessListener {
+                            Log.d("Citas","Cita ${document.id} eliminada exitosamente.")
+                        }
+                        .addOnFailureListener {
+                            Log.d("Citas","Error al eliminar cita ${document.id}")
+                        }
+                }
+            }
+            .addOnFailureListener {
+                Log.d("Citas","Error al obtener citas para eliminar")
+            }
+    }
+
+    /**
+     * Elimina todas las citas anteriores al día actual de Firestore.
+     *
+     * @param context Contexto de la aplicación.
+     */
+    fun deletePastDates(context: Context) {
+        val db = FirebaseFirestore.getInstance()
+        val datesRef = db.collection("dates")
+
+        val currentDate = Date()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd-HH:mm", Locale.getDefault())
+
+        datesRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    val dateString = document.getString("fecha")
+                    if (dateString != null) {
+                        val date = dateFormat.parse(dateString)
+                        if (date != null && date.before(currentDate)) {
+                            document.reference.delete()
+                                .addOnSuccessListener {
+                                    Log.d("Citas","Cita ${document.id} eliminada exitosamente.")
+                                }
+                                .addOnFailureListener {
+                                    Log.d("Citas","Error al eliminar cita ${document.id}")
+                                }
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener {
+                Log.d("Citas","Error al obtener citas para eliminar")
             }
     }
 }
